@@ -12,7 +12,7 @@ interface OrphanageProps {
     instructions: string;
     opening_hours: string;
     open_on_weekends: boolean;
-    images: string[]
+    images: { path: string }[]
 }
 
 export default {

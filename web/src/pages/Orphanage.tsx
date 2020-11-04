@@ -50,7 +50,7 @@ export default function Orphanage() {
 
             <main>
                 <div className="orphanage-details">
-                    <img src={orphanage.images[activeImageIndex].url} alt={orphanage.name} />
+                    <img src={orphanage.images[activeImageIndex].url.replace('https', 'http')} alt={orphanage.name} />
 
                     <div className="images">
                         {orphanage.images.map((image, index) => {
@@ -63,7 +63,7 @@ export default function Orphanage() {
                                         setActiveImageIndex(index);
                                     }}
                                 >
-                                    <img src={image.url} alt={orphanage.name} />
+                                    <img src={image.url.replace('https', 'http')} alt={orphanage.name} />
                                 </button>
                             )
                         })}
@@ -84,8 +84,12 @@ export default function Orphanage() {
                                 scrollWheelZoom={false}
                                 doubleClickZoom={false}
                             >
-                                <TileLayer
+                                {/* <TileLayer
                                     url={`https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.REACT_APP_MAPBOX_TOKEN}`}
+                                /> */}
+
+                                <TileLayer
+                                    url={"https://a.tile.openstreetmap.org/{z}/{x}/{y}.png"}
                                 />
                                 <Marker interactive={false} icon={mapIcon} position={[orphanage.latitude, orphanage.longitude]} />
                             </Map>
