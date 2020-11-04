@@ -1,93 +1,93 @@
-import React, { ChangeEvent, FormEvent, useState } from "react";
-import { useHistory } from "react-router-dom";
-import { Map, Marker, TileLayer } from 'react-leaflet';
-import { FiPlus, FiX } from "react-icons/fi";
-import { LeafletMouseEvent } from 'leaflet';
+import React, { ChangeEvent, FormEvent, useState } from "react"
+import { useHistory } from "react-router-dom"
+import { Map, Marker, TileLayer } from 'react-leaflet'
+import { FiPlus, FiX } from "react-icons/fi"
+import { LeafletMouseEvent } from 'leaflet'
 
-// import api from "../services/api";
+import api from "../services/api"
 
-import Sidebar from "../components/SideBar";
-// import mapIcon from "../utils/mapIcon";
+import Sidebar from "../components/SideBar"
+import mapIcon from "../utils/mapIcon"
 
-import '../styles/pages/create-orphanage.css';
+import '../styles/pages/create-orphanage.css'
 
 interface PreviewImage {
-    name: string;
-    url: string;
+    name: string
+    url: string
 }
 
 export default function CreateOrphanage() {
-    const history = useHistory();
+    const history = useHistory()
 
-    const [position, setPosition] = useState({ latitude: 0, longitude: 0 });
+    const [position, setPosition] = useState({ latitude: 0, longitude: 0 })
 
-    const [name, setName] = useState('');
-    const [about, setAbout] = useState('');
-    const [instructions, setInstructions] = useState('');
-    const [opening_hours, setOpeningHours] = useState('');
-    const [open_on_weekends, setOpenOnWeekends] = useState(true);
-    const [images, setImages] = useState<File[]>([]);
-    const [previewImages, setPreviewImages] = useState<PreviewImage[]>([]);
+    const [name, setName] = useState('')
+    const [about, setAbout] = useState('')
+    const [instructions, setInstructions] = useState('')
+    const [opening_hours, setOpeningHours] = useState('')
+    const [open_on_weekends, setOpenOnWeekends] = useState(true)
+    const [images, setImages] = useState<File[]>([])
+    const [previewImages, setPreviewImages] = useState<PreviewImage[]>([])
 
     function handleMapClick(event: LeafletMouseEvent) {
-        const { lat, lng } = event.latlng;
+        const { lat, lng } = event.latlng
 
         setPosition({
             latitude: lat,
             longitude: lng
-        });
+        })
     }
 
     async function handleSubmit(event: FormEvent) {
-        event.preventDefault();
+        event.preventDefault()
 
-        const { latitude, longitude } = position;
+        const { latitude, longitude } = position
 
-        const data = new FormData();
+        const data = new FormData()
 
-        data.append('name', name);
-        data.append('about', about);
-        data.append('latitude', String(latitude));
-        data.append('longitude', String(longitude));
-        data.append('instructions', instructions);
-        data.append('opening_hours', opening_hours);
-        data.append('open_on_weekends', String(open_on_weekends));
+        data.append('name', name)
+        data.append('about', about)
+        data.append('latitude', String(latitude))
+        data.append('longitude', String(longitude))
+        data.append('instructions', instructions)
+        data.append('opening_hours', opening_hours)
+        data.append('open_on_weekends', String(open_on_weekends))
 
         images.forEach(image => {
-            data.append('images', image);
-        });
+            data.append('images', image)
+        })
 
-        // await api.post('/orphanages', data);
+        await api.post('/orphanages', data)
 
-        alert('Orfanato cadastrado com sucesso!');
+        alert('Orfanato cadastrado com sucesso!')
 
-        history.push('/app');
+        history.push('/app')
     }
 
     function handleSelectImages(event: ChangeEvent<HTMLInputElement>) {
         if (!event.target.files) {
-            return;
+            return
         }
-        const selectedImages = Array.from(event.target.files);
+        const selectedImages = Array.from(event.target.files)
 
-        event.target.value = "";
+        event.target.value = ""
 
-        setImages(selectedImages);
+        setImages(selectedImages)
 
         const selectedImagesPreview = selectedImages.map(image => {
-            return { name: image.name, url: URL.createObjectURL(image) };
-        });
+            return { name: image.name, url: URL.createObjectURL(image) }
+        })
 
-        setPreviewImages(selectedImagesPreview);
+        setPreviewImages(selectedImagesPreview)
     }
 
     function handleRemoveImage(image: PreviewImage) {
         setPreviewImages(
             previewImages.map((image) => image).filter((img) => img.url !== image.url)
-        );
+        )
         setImages(
             images.map((image) => image).filter((img) => img.name !== image.name)
-        );
+        )
     }
 
     return (
@@ -105,14 +105,18 @@ export default function CreateOrphanage() {
                             zoom={15}
                             onclick={handleMapClick}
                         >
-                            <TileLayer
+                            {/* <TileLayer
                                 url={`https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.REACT_APP_MAPBOX_TOKEN}`}
+                            /> */}
+
+                            <TileLayer
+                                url={"https://a.tile.openstreetmap.org/{z}/{x}/{y}.png"}
                             />
 
                             {position.latitude !== 0 && (
                                 <Marker
                                     interactive={false}
-                                    // icon={mapIcon}
+                                    icon={mapIcon}
                                     position={[
                                         position.latitude,
                                         position.longitude
@@ -156,7 +160,7 @@ export default function CreateOrphanage() {
                                             </span>
                                             <img src={image.url} alt={name} className="new-image" />
                                         </div>
-                                    );
+                                    )
                                 })}
 
                                 <label htmlFor="image[]" className="new-image">
@@ -223,5 +227,5 @@ export default function CreateOrphanage() {
                 </form>
             </main>
         </div>
-    );
+    )
 }
