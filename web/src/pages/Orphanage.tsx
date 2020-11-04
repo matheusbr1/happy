@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-// import { FaWhatsapp } from "react-icons/fa";
+import { FaWhatsapp } from "react-icons/fa";
 import { FiClock, FiInfo } from "react-icons/fi";
 import { Map, Marker, TileLayer } from "react-leaflet";
 import { useParams } from 'react-router-dom';
 
 import SideBar from '../components/SideBar'
-// import mapIcon from "../utils/mapIcon";
+import mapIcon from "../utils/mapIcon";
 
-// import api from "../services/api";
+import api from "../services/api"
 
 import '../styles/pages/orphanage.css';
 
@@ -34,11 +34,11 @@ export default function Orphanage() {
     const [orphanage, setOrphaange] = useState<Orphanage>();
     const [activeImageIndex, setActiveImageIndex] = useState(0);
 
-    // useEffect(() => {
-    //     api.get(`/orphanages/${params.id}`).then(res => {
-    //         setOrphaange(res.data);
-    //     });
-    // }, [params.id]);
+    useEffect(() => {
+        api.get(`/orphanages/${params.id}`).then(response => {
+            setOrphaange(response.data);
+        });
+    }, [params.id]);
 
     if (!orphanage) {
         return <p>Carregando...</p>
@@ -87,7 +87,7 @@ export default function Orphanage() {
                                 <TileLayer
                                     url={`https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.REACT_APP_MAPBOX_TOKEN}`}
                                 />
-                                {/* <Marker interactive={false} icon={mapIcon} position={[orphanage.latitude, orphanage.longitude]} /> */}
+                                <Marker interactive={false} icon={mapIcon} position={[orphanage.latitude, orphanage.longitude]} />
                             </Map>
 
                             <footer>
@@ -123,10 +123,10 @@ export default function Orphanage() {
 
                         </div>
 
-                        {/* <button type="button" className="contact-button">
-              <FaWhatsapp size={20} color="#FFF" />
-              Entrar em contato
-            </button> */}
+                        <button type="button" className="contact-button">
+                            <FaWhatsapp size={20} color="#FFF" />
+                        Entrar em contato
+                        </button>
                     </div>
                 </div>
             </main>

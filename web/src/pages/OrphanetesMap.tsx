@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { FiPlus, FiArrowRight } from 'react-icons/fi'
 import { Map, TileLayer, Marker, Popup } from 'react-leaflet'
@@ -8,8 +8,25 @@ import mapIcon from '../utils/mapIcon'
 import mapMarkerImg from '../images/map-marker.svg'
 
 import '../styles/pages/orphanages-map.css'
+import api from '../services/api'
+
+interface Orphanage {
+    id: number
+    latitude: number
+    longitude: number
+    name: string
+}
 
 function OrphanetesMap() {
+
+    const [orphanages, setOrphanages] = useState<Orphanage[]>([])
+
+    useEffect(() => {
+        api.get('/orphanages').then(response => {
+            setOrphanages(response.data)
+        })
+    }, [])
+
     return (
         <div id="page-map">
             <aside>
@@ -35,25 +52,27 @@ function OrphanetesMap() {
             >
                 <TileLayer url="https://a.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-                <Marker
-                    position={[-23.556302, -46.7962328]}
-                    icon={mapIcon}
-                >
-                    <Popup
-                        closeButton={false}
-                        minWidth={240}
-                        maxWidth={240}
-                        className="map-popup"
+                {orphanages.map(orphanage => (
+                    <Marker
+                        key={orphanage.id}
+                        position={[orphanage.latitude, orphanage.longitude]}
+                        icon={mapIcon}
                     >
-                        Lar das meninas
+                        <Popup
+                            closeButton={false}
+                            minWidth={240}
+                            maxWidth={240}
+                            className="map-popup"
+                        >
+                            {orphanage.name}
 
-                        <Link to="/orphanages/1">
-                            <FiArrowRight size={32} color="#fff" />
-                        </Link>
+                            <Link to={`/orphanages/${orphanage.id}`}>
+                                <FiArrowRight size={32} color="#fff" />
+                            </Link>
 
-                    </Popup>
-                </Marker>
-
+                        </Popup>
+                    </Marker>
+                ))}
             </Map>
 
             <Link to="/orphanages/create" className="create-orphanage" >
